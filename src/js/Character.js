@@ -1,41 +1,30 @@
 export default class Character {
-  constructor(name, type) {
-    // name - строка, min - 2 символа, max - 10
-    if (typeof name === 'string' && name.length >= 2 && name.length <= 10) {
-      this.name = name;
-    } else {
-      throw new Error('Имя должно быть строкой и содержать от 2х до 10 символов');
-    }
-    // type - один из типов (строка): Bowman, Swordsman, Magician, Daemon, Undead, Zombie
-    if (typeof type === 'string' && (type === 'Bowerman' || type === 'Swordsman' || type === 'Magician' || type === 'Daemon' || type === 'Undead' || type === 'Zombie')) {
-      this.type = type;
-    } else {
-      throw new Error('Тип героя должен быть: Bowerman, Swordsman, Magician, Daemon, Undead, Zombie');
-    }
-    this.health = 100;
-    this.level = 1;
+  constructor(name) {
+    this.name = name;
+    this.attackMeaning = 50;
+    this.stonedCondition = false;
   }
 
-  levelUp() {
-    if (this.health === 0) {
-      throw new Error('нельзя повысить левел умершего');
-    }
-    this.level += 1;
-    this.health = 100;
-    this.attack *= 1.2;
-    this.defense *= 1.2;
-  }
-
-  damage(points) {
-    if (this.health > 0) {
-      this.health -= points * (1 - this.defense / 100);
-      if (this.health <= 0) {
-        throw new Error('Персонаж мёртв');
+  get attack() {
+    return (distanceInCells) => {
+      let attack = this.attackMeaning - 10 * (distanceInCells - 1);
+      if (this.stoned) {
+        attack -= Math.log2(distanceInCells) * 5;
       }
-    } else {
-      throw new Error('Персонаж мёртв');
-    }
+      attack = Math.round(attack);
+      return attack;
+    };
+  }
+
+  set attack(meaning) {
+    this.attackMeaning = meaning;
+  }
+
+  get stoned() {
+    return this.stonedCondition;
+  }
+
+  set stoned(datura) {
+    this.stonedCondition = datura;
   }
 }
-const person = new Character('Mike', 'Zombie');
-console.log(person);
